@@ -1,4 +1,7 @@
+const dotenv = require('dotenv');
 const { Pool } = require('pg');
+
+dotenv.config();
 
 const pool = new Pool({
   user: 'gpgxtshe',
@@ -11,5 +14,10 @@ pool.connect();
 
 module.exports = {
   query: async (text, params) => pool.query(text, params),
-  GET_ALL_USERS: 'SELECT * FROM users'
+  GET_ALL_USERS: 'SELECT * FROM users',
+  ADD_USER: `
+  INSERT INTO users (name, email, password)
+  VALUES ($1, $2, $3)
+  `,
+  GET_BY_EMAIL: `SELECT * FROM users WHERE email = $1`
 }

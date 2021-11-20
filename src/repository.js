@@ -5,4 +5,11 @@ module.exports = {
     const { rows } = await db.query(db.GET_ALL_USERS);
     return rows;
   },
+  addUser: async obj => {
+    await db.query(db.ADD_USER, Object.values(obj));
+  },
+  login: async email => {
+    const { rows } = await db.query(db.GET_BY_EMAIL, [email]);
+    return rows[0];
+  },
 }
