@@ -9,10 +9,7 @@ router.use(express.json());
 
 router.get('/', async (req, res) => {
   const users = await repository.users()
-  res
-    .json(users)
-    .status(201)
-    .end()
+  res.json(users)
 })
 
 router.post('/', async (req, res) => {
@@ -23,7 +20,7 @@ router.post('/', async (req, res) => {
       ...req.body,
       password: hashedPassword
     });
-    res.send('user created')
+    res.status(201).send('user created')
   } catch (err) {
     res.status(500).send()
   }
