@@ -12,4 +12,7 @@ module.exports = {
     const { rows } = await db.query(db.GET_BY_EMAIL, [email]);
     return rows[0];
   },
+  delete: async email => {
+    await db.query(db.DELETE_USER, [email])
+  }
 }

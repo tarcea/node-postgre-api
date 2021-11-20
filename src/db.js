@@ -19,5 +19,6 @@ module.exports = {
   INSERT INTO users (name, email, password)
   VALUES ($1, $2, $3)
   `,
-  GET_BY_EMAIL: `SELECT * FROM users WHERE email = $1`
+  GET_BY_EMAIL: `SELECT * FROM users WHERE email = $1`,
+  DELETE_USER: `DELETE FROM users WHERE email = $1`
 }
