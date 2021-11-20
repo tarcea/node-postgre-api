@@ -30,7 +30,7 @@ router.post('/', async (req, res) => {
 })
 
 router.post('/login', async (req, res) => {
-  const { password, email, name } = req.body
+  const { password, email } = req.body
   const user = await repository.login(email);
   if (user == null) {
     return res.status(400).send('Cannot find user');
