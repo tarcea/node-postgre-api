@@ -14,5 +14,13 @@ module.exports = {
   },
   delete: async email => {
     await db.query(db.DELETE_USER, [email])
+  },
+  findUserByEmail: async email => {
+    const { rows } = await db.query(db.FIND_USER_BY_EMAIL, [email]);
+    return rows[0];
+  },
+  findUserByName: async name => {
+    const { rows } = await db.query(db.FIND_USER_BY_NAME, [name]);
+    return rows[0];
   }
 }

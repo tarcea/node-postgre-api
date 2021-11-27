@@ -20,5 +20,7 @@ module.exports = {
   VALUES ($1, $2, $3)
   `,
   GET_BY_EMAIL: `SELECT * FROM users WHERE email = $1`,
-  DELETE_USER: `DELETE FROM users WHERE email = $1`
+  DELETE_USER: `DELETE FROM users WHERE email = $1`,
+  FIND_USER_BY_EMAIL: `SELECT * FROM users WHERE email = $1`,
+  FIND_USER_BY_NAME: `SELECT * FROM users WHERE name = $1`
 }

@@ -1,26 +1,51 @@
 const express = require('express');
-const { passwordHashing, passwordDecryption } = require('./hashing');
+const bcrypt = require('bcrypt');
+const JWT = require('jsonwebtoken');
 const repository = require('./repository');
+const cors = require('cors');
+const dotenv = require('dotenv');
+
+dotenv.config();
+const secret = process.env.JWT_SECRET;
+
 
 const router = express.Router();
 
 router.use(express.urlencoded({ extended: false }));
 router.use(express.json());
+router.use(cors());
 
 router.get('/', async (req, res) => {
   const users = await repository.users()
   res.json(users)
 })
 
-router.post('/', async (req, res) => {
+router.post('/signup', async (req, res) => {
   try {
-    const { password } = req.body;
-    const hashedPassword = await passwordHashing(password, 10);
-    const user = await repository.addUser({
+    const { password, email, name } = req.body;
+    const checkUserEmail = await repository.findUserByEmail(email);
+    const checkUserName = await repository.findUserByName(name);
+    console.log(checkUserEmail, checkUserName)
+    if (checkUserEmail || checkUserName) {
+      return res.status(400).json({
+        "errors": [
+          {
+            "msg": "The name or email already exists",
+          }
+        ]
+      })
+    }
+    const hashedPassword = await bcrypt.hash(password, 10);
+    await repository.addUser({
       ...req.body,
       password: hashedPassword
     });
-    res.status(201).send('user created')
+    const token = await JWT.sign({
+      email
+    }, secret, {
+      expiresIn: 36000
+    })
+    res.status(201).json({ token })
   } catch (err) {
     res.status(500).send()
   }
@@ -33,9 +58,14 @@ router.post('/login', async (req, res) => {
     return res.status(400).send('Cannot find user');
   }
   try {
-    const isLoggedIn = await passwordDecryption(password, user.password);
+    const isLoggedIn = await bcrypt.compare(password, user.password);
+    const token = await JWT.sign({
+      email
+    }, secret, {
+      expiresIn: 36000
+    })
     if (isLoggedIn) {
-      res.send('success')
+      res.json({ token })
     } else {
       res.send('not allowed')
     }
