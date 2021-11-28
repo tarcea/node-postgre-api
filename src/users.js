@@ -16,6 +16,18 @@ router.use(express.json());
 router.use(cors());
 
 router.get('/', async (req, res) => {
+  const { token } = req.headers;
+  console.log(token)
+  if (!token) {
+    console.log('unautorized')
+    return res.status(401).json({
+      "errors": [
+        {
+          "msg": "unautorized",
+        }
+      ]
+    })
+  }
   const users = await repository.users()
   res.json(users)
 })
