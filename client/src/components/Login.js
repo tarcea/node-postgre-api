@@ -1,15 +1,15 @@
 import axios from 'axios';
 import React, { useState } from 'react';
 
-const Login = () => {
+const Login = ({ setCurrentUser, getCurrentUser }) => {
   const [values, setValues] = useState({ email: '', password: '' });
 
   const loginUser = async () => {
     const res = await axios.post('api/users/login/', values, { headers: { "Content-Type": "application/json" } });
     const token = await res.data.token
-    localStorage.setItem("authToken", token)
+    localStorage.setItem("authToken", token);
+    await getCurrentUser()
   }
-
 
   const handleChange = (e) => {
     setValues({ ...values, [e.target.name]: e.target.value })
@@ -21,7 +21,8 @@ const Login = () => {
   }
 
   const logOut = async () => {
-    await localStorage.removeItem('authToken')
+    await localStorage.removeItem('authToken');
+    setCurrentUser('');
   }
 
   return (
