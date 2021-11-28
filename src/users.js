@@ -30,7 +30,7 @@ router.get('/', async (req, res) => {
   }
   const users = await repository.users()
   res.json(users)
-})
+});
 
 router.post('/signup', async (req, res) => {
   try {

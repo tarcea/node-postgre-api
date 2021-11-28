@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 
 const Login = ({ setCurrentUser, getCurrentUser }) => {
   const [values, setValues] = useState({ email: '', password: '' });
+  const { email, password } = values;
 
   const loginUser = async () => {
     const res = await axios.post('api/users/login/', values, { headers: { "Content-Type": "application/json" } });
@@ -18,6 +19,7 @@ const Login = ({ setCurrentUser, getCurrentUser }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     await loginUser();
+    setValues({ email: '', password: '' })
   }
 
   const logOut = async () => {
@@ -33,11 +35,13 @@ const Login = ({ setCurrentUser, getCurrentUser }) => {
           type="text"
           placeholder="email"
           onChange={handleChange}
+          value={email}
           name="email" />
         <input
           type="text"
           placeholder="password"
           onChange={handleChange}
+          value={password}
           name="password" />
         <input type="submit" value="login" />
       </form>
