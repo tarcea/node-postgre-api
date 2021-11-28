@@ -42,7 +42,7 @@ router.post('/signup', async (req, res) => {
       return res.status(400).json({
         "errors": [
           {
-            "msg": "The name or email already exists",
+            "msg": "name or email already exists",
           }
         ]
       })
