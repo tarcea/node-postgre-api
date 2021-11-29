@@ -1,15 +1,18 @@
 import axios from 'axios';
 import React, { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 
-const Login = ({ setCurrentUser, getCurrentUser }) => {
+const Login = () => {
   const [values, setValues] = useState({ email: '', password: '' });
+  const navigate = useNavigate();
   const { email, password } = values;
 
   const loginUser = async () => {
-    const res = await axios.post('api/users/login/', values, { headers: { "Content-Type": "application/json" } });
+    const res = await axios.post('api/users/login/', values, { headers: { "Content-Type": "application/json" }, body: JSON.stringify(values) });
     const token = await res.data.token
     localStorage.setItem("authToken", token);
-    await getCurrentUser()
+    navigate('/');
+    // setCurrentUser({ name: res.data.user.name, id: res.data.user.id, email: res.data.user.email })
   }
 
   const handleChange = (e) => {
@@ -20,11 +23,6 @@ const Login = ({ setCurrentUser, getCurrentUser }) => {
     e.preventDefault();
     await loginUser();
     setValues({ email: '', password: '' })
-  }
-
-  const logOut = async () => {
-    await localStorage.removeItem('authToken');
-    setCurrentUser('');
   }
 
   return (
@@ -45,7 +43,7 @@ const Login = ({ setCurrentUser, getCurrentUser }) => {
           name="password" />
         <input type="submit" value="login" />
       </form>
-      <button onClick={logOut}>logout</button>
+      <Link to="/signup">No account? Sign up!</Link>
     </>
   );
 };

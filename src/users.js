@@ -32,6 +32,13 @@ router.get('/', async (req, res) => {
   res.json(users)
 });
 
+router.get('/user', async (req, res) => {
+  const token = (req.headers.authorization.replace('Bearer ', '').replaceAll('"', ''));
+  const decodedToken = JWT.verify(token, secret);
+  const user = await repository.findUserByEmail(decodedToken.email);
+  res.status(201).json({ token, user: { name: user.name, id: user.id } })
+})
+
 router.post('/signup', async (req, res) => {
   try {
     const { password, email, name } = req.body;
@@ -65,19 +72,19 @@ router.post('/signup', async (req, res) => {
 
 router.post('/login', async (req, res) => {
   const { password, email } = req.body
-  const user = await repository.login(email);
+  const user = await repository.findUserByEmail(email);
   if (user == null) {
     return res.status(400).send('Cannot find user');
   }
   try {
     const isLoggedIn = await bcrypt.compare(password, user.password);
-    const token = await JWT.sign({
-      email
-    }, secret, {
-      expiresIn: 36000
-    })
     if (isLoggedIn) {
-      res.json({ token })
+      const token = JWT.sign({
+        email
+      }, secret, {
+        expiresIn: 36000
+      })
+      res.status(201).json({ token, user: { email: user.email, name: user.name, id: user.id } })
     } else {
       res.send('not allowed')
     }
