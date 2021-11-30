@@ -1,11 +1,12 @@
 {
   "name": "postgre-api",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Authentication api",
+  "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon app.js"
+    "dev": "nodemon app.js",
+    "start": "node app.js"
   },
   "keywords": [],
   "author": "",
@@ -20,5 +21,8 @@
   },
   "devDependencies": {
     "nodemon": "^2.0.15"
+  },
+  "engines": {
+    "node": "16.x"
   }
 }
