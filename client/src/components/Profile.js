@@ -5,9 +5,10 @@ import { useNavigate } from 'react-router-dom';
 const Profile = () => {
   const [currentUser, setCurrentUser] = useState('');
   const navigate = useNavigate();
+  const base = 'https://auth101-gt.herokuapp.com';
 
   const getUserData = async (token) => {
-    let resp = await axios.get('/api/users/user', {
+    let resp = await axios.get(`${base}/api/users/user`, {
       headers: { "Authorization": `Bearer ${token}` },
     })
     console.log(resp.data)

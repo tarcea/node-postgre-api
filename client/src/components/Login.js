@@ -6,9 +6,10 @@ const Login = () => {
   const [values, setValues] = useState({ email: '', password: '' });
   const navigate = useNavigate();
   const { email, password } = values;
+  const base = 'https://auth101-gt.herokuapp.com';
 
   const loginUser = async () => {
-    const res = await axios.post('api/users/login/', values, { headers: { "Content-Type": "application/json" }, body: JSON.stringify(values) });
+    const res = await axios.post(`${base}/api/users/login/`, values, { headers: { "Content-Type": "application/json" }, body: JSON.stringify(values) });
     const token = await res.data.token
     localStorage.setItem("authToken", token);
     navigate('/');
