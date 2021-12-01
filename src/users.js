@@ -15,11 +15,6 @@ router.use(express.urlencoded({ extended: false }));
 router.use(express.json());
 router.use(cors());
 
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  next();
-});
-
 router.get('/', async (req, res) => {
   const { token } = req.headers;
   console.log('token', token)
