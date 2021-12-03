@@ -1,5 +1,10 @@
 const express = require('express');
 const users = require('./src/users');
+const dotenv = require('dotenv');
+const path = require('path');
+
+dotenv.config();
+
 const port = process.env.PORT || 3001;
 const app = express();
 
