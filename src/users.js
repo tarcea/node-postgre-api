@@ -16,27 +16,20 @@ router.use(express.urlencoded({ extended: false }));
 router.use(express.json());
 router.use(cors());
 
-router.get('/', async (req, res) => {
-  const { token } = req.headers;
-  console.log('token', token)
-  // if (!token) {
-  //   console.log('unautorized')
-  //   return res.status(401).json({
-  //     "errors": [
-  //       {
-  //         "msg": "unautorized",
-  //       }
-  //     ]
-  //   })
-  // }
+router.get('/', verifyUser, async (req, res) => {
+  // const { token, decodedToken } = res.locals;
   const users = await repository.users()
   res.json(users)
 });
 
 router.get('/user', verifyUser, async (req, res) => {
-  const { token, decodedToken } = res.locals;
-  const user = await repository.findUserByEmail(decodedToken.email);
-  res.status(201).json({ token, user: { name: user.name, id: user.id } })
+  try {
+    const { token, decodedToken } = res.locals;
+    const user = await repository.findUserByEmail(decodedToken.email);
+    res.status(201).json({ token, user: { name: user.name, id: user.id } })
+  } catch (err) {
+    res.status(400).send(err.message)
+  }
 });
 
 router.post('/signup', async (req, res) => {
@@ -62,7 +55,7 @@ router.post('/signup', async (req, res) => {
     const token = JWT.sign({
       email
     }, secret, {
-      expiresIn: 36000
+      expiresIn: 3600
     })
     res.status(201).json({ token })
   } catch (err) {
@@ -82,7 +75,7 @@ router.post('/login', async (req, res) => {
       const token = JWT.sign({
         email
       }, secret, {
-        expiresIn: 36000
+        expiresIn: 3600
       })
       res.status(201).json({ token, user: { email: user.email, name: user.name, id: user.id } })
     } else {
