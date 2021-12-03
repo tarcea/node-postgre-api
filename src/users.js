@@ -4,6 +4,7 @@ const JWT = require('jsonwebtoken');
 const repository = require('./repository');
 const cors = require('cors');
 const dotenv = require('dotenv');
+const { verifyUser } = require('./middlewares');
 
 dotenv.config();
 const secret = process.env.JWT_SECRET;
@@ -32,12 +33,11 @@ router.get('/', async (req, res) => {
   res.json(users)
 });
 
-router.get('/user', async (req, res) => {
-  const token = (req.headers.authorization.replace('Bearer ', '').replaceAll('"', ''));
-  const decodedToken = JWT.verify(token, secret);
+router.get('/user', verifyUser, async (req, res) => {
+  const { token, decodedToken } = res.locals;
   const user = await repository.findUserByEmail(decodedToken.email);
   res.status(201).json({ token, user: { name: user.name, id: user.id } })
-})
+});
 
 router.post('/signup', async (req, res) => {
   try {
@@ -59,7 +59,7 @@ router.post('/signup', async (req, res) => {
       ...req.body,
       password: hashedPassword
     });
-    const token = await JWT.sign({
+    const token = JWT.sign({
       email
     }, secret, {
       expiresIn: 36000
